@@ -2,21 +2,15 @@ package base;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.List;
-
 import models.Dica;
 import models.DicaConselho;
 import models.Tema;
-import models.User;
 import models.dao.GenericDAO;
 import models.dao.GenericDAOImpl;
 
 import org.junit.Test;
 
-import play.mvc.Http;
 import play.mvc.Result;
-import play.test.FakeRequest;
-
 
 public class DicaDAOTest extends AbstractTest{
 	Result result;

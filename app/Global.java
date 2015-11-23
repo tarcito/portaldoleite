@@ -3,6 +3,7 @@ import java.util.List;
 
 import models.Disciplina;
 import models.Tema;
+import models.User;
 import models.dao.GenericDAOImpl;
 import play.Application;
 import play.GlobalSettings;
@@ -14,6 +15,7 @@ public class Global extends GlobalSettings {
 
 	private static GenericDAOImpl dao = new GenericDAOImpl();
 	private List<Disciplina> disciplinas = new ArrayList<>();
+	private List<User> usuarios = new ArrayList<>();
 	
 	@Override
 	public void onStart(Application app) {
@@ -23,7 +25,10 @@ public class Global extends GlobalSettings {
 			@Override
 			public void invoke() throws Throwable {
 				if(dao.findAllByClassName(Disciplina.class.getName()).size() == 0){
-					criaDisciplinaTemas();
+					criaDisciplinasTemas();
+				}
+				if(dao.findAllByClassName(User.class.getName()).size() == 0){
+					criaUsuarios();
 				}
 			}
 		});
@@ -32,18 +37,23 @@ public class Global extends GlobalSettings {
 	@Override
 	public void onStop(Application app){
 	    JPA.withTransaction(new play.libs.F.Callback0() {
-	    @Override
-	    public void invoke() throws Throwable {
-	        Logger.info("Aplicação finalizando...");
-	        disciplinas = dao.findAllByClassName("Disciplina");
+			@Override
+			public void invoke() throws Throwable {
+				Logger.info("Aplicação finalizando...");
+				disciplinas = dao.findAllByClassName("Disciplina");
+				usuarios = dao.findAllByClassName("User");
 
-	        for (Disciplina disciplina: disciplinas) {
-	        dao.removeById(Disciplina.class, disciplina.getId());
-	       } 
-	    }}); 
+				for (Disciplina disciplina : disciplinas) {
+					dao.removeById(Disciplina.class, disciplina.getId());
+				}
+				for(User usuario : usuarios){
+					dao.removeById(User.class,usuario.getId());
+				}
+			}
+		});
 	}
 	
-	private void criaDisciplinaTemas(){
+	private void criaDisciplinasTemas(){
 		Disciplina si1 = new Disciplina("Sistemas de Informação 1");
 		si1.addTema(new Tema("Análise x Design"));
 		si1.addTema(new Tema("Orientação a objetos"));
@@ -104,6 +114,50 @@ public class Global extends GlobalSettings {
 		plp.addTema(new Tema("Programação Orientado a Modelos"));
 		plp.addTema(new Tema("Programação Concorrente"));
 		dao.persist(plp);
+
+		dao.flush();
+	}
+
+	private void criaUsuarios(){
+		User tarcito = new User("tarcito.lua@gmail.com","01020304","tarcito");
+		tarcito.setNome("Tárcito Luã");
+		dao.persist(tarcito);
+
+		User tarcisio = new User("josetaarcisiof@gmail.com","123456789","fbiswat");
+		tarcisio.setNome("José Tarcisio Fernandes");
+		dao.persist(tarcisio);
+
+		User paula = new User("paula.maria@gmail.com", "paula2015", "paula");
+		paula.setNome("Maria Paula Cavalcante");
+		dao.persist(paula);
+
+		User ricardo12 = new User("ricardao009@hotmail.com","rick0241","ricardo12");
+		ricardo12.setNome("Ricardo Schnetzer");
+		dao.persist(ricardo12);
+
+		User helena = new User("helenasousa@gmail.com","h145ex","helena");
+		helena.setNome("maria Helena Sousa");
+		dao.persist(helena);
+
+		User mauro15 = new User("diniz.mauro@yahoo.com.br","mauRX7","mauro15");
+		mauro15.setNome("Mauro Silva Diniz");
+		dao.persist(mauro15);
+
+		User gabis = new User("gabisousa@gmail.com", "gabi987", "gabis");
+		gabis.setNome("Gabriela Sousa");
+		dao.persist(gabis);
+
+		User emanuel = new User("eman.carvalho@gmail.com","f6l6s3r10","emanuel");
+		emanuel.setNome("Emanuel Carvalho");
+		dao.persist(emanuel);
+
+		User bichopiruleta = new User("alex.albuquerque@gmail.com","11121314","bichopiruleta");
+		bichopiruleta.setNome("Alexandre Albuquerque");
+		dao.persist(bichopiruleta);
+
+		User black = new User("pedro.black@gmail.com","blackblackblack","black");
+		black.setNome("Pedro Albuquerque");
+		dao.persist(black);
 
 		dao.flush();
 	}

@@ -1,10 +1,10 @@
 import static org.fest.assertions.Assertions.assertThat;
 
+import models.dao.GenericDAO;
+import models.dao.GenericDAOImpl;
 import org.junit.Test;
 
 import models.User;
-import models.dao.GenericDAO;
-import models.dao.GenericDAOImpl;
 import base.AbstractTest;
 
 
@@ -14,10 +14,11 @@ public class UsuarioTest extends AbstractTest{
 	
 	@Test
 	public void deveSalvarUsuarioNoBD() {
+
 		User u = new User("admin@gmail.com","1234","Admin");
 		dao.persist(u);
 		
-		assertThat(dao.findAllByClassName("User").size()).isEqualTo(1);
+		assertThat(dao.findAllByClassName("User").size()).isEqualTo(numeroInicialDeUsuarios() + 1);
 		
 		User usuarioNoBD = dao.findByEntityId(User.class, u.getId());
 		
@@ -26,7 +27,7 @@ public class UsuarioTest extends AbstractTest{
 		User u2 = new User("abc@gmail.com", "123", "Leo");
 		dao.persist(u2);
 		
-		assertThat(dao.findAllByClassName("User").size()).isEqualTo(2);
+		assertThat(dao.findAllByClassName("User").size()).isEqualTo(numeroInicialDeUsuarios() + 2);
 		
 		User usuario2NoBD = dao.findByEntityId(User.class, u2.getId());
 		
@@ -41,4 +42,5 @@ public class UsuarioTest extends AbstractTest{
 		assertThat(u.checkPass("789456")).isTrue();
 		assertThat(u.checkPass("789455")).isFalse();
 	}
+
 }

@@ -2,6 +2,8 @@ package base;
 
 import javax.persistence.EntityManager;
 
+import models.dao.GenericDAO;
+import models.dao.GenericDAOImpl;
 import org.junit.After;
 import org.junit.Before;
 
@@ -13,6 +15,8 @@ import scala.Option;
 
 public abstract class AbstractTest {
     public EntityManager em;
+    GenericDAO dao = new GenericDAOImpl();
+    private int numeroDeUsuarios;
 
     @Before
     public void setUp() {
@@ -22,6 +26,8 @@ public abstract class AbstractTest {
         em = jpaPlugin.get().em("default");
         JPA.bindForCurrentThread(em);
         em.getTransaction().begin();
+
+        numeroDeUsuarios = dao.findAllByClassName("User").size(); //verifica quantos usuarios foram criados antes dos testes
     }
 
     @After
@@ -29,5 +35,13 @@ public abstract class AbstractTest {
         em.getTransaction().commit();
         JPA.bindForCurrentThread(null);
         em.close();
+    }
+
+    /*
+        retorna o numero de usuarios anteriores ao inicio dos testes
+     */
+
+    protected int numeroInicialDeUsuarios(){
+        return numeroDeUsuarios;
     }
 }

@@ -1,9 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Disciplina;
-import models.Tema;
-import models.User;
+import models.*;
 import models.dao.GenericDAOImpl;
 import play.Application;
 import play.GlobalSettings;
@@ -24,12 +22,14 @@ public class Global extends GlobalSettings {
 		JPA.withTransaction(new play.libs.F.Callback0() {
 			@Override
 			public void invoke() throws Throwable {
-				if(dao.findAllByClassName(Disciplina.class.getName()).size() == 0){
-					criaDisciplinasTemas();
-				}
 				if(dao.findAllByClassName(User.class.getName()).size() == 0){
 					criaUsuarios();
 				}
+				if(dao.findAllByClassName(Disciplina.class.getName()).size() == 0){
+					criaDisciplinasTemasDicas();
+				}
+
+				//adicionaVotos();
 			}
 		});
 	}
@@ -53,7 +53,7 @@ public class Global extends GlobalSettings {
 		});
 	}
 	
-	private void criaDisciplinasTemas(){
+	private void criaDisciplinasTemasDicas(){
 		Disciplina si1 = new Disciplina("Sistemas de Informação 1");
 		si1.addTema(new Tema("Análise x Design"));
 		si1.addTema(new Tema("Orientação a objetos"));
@@ -61,12 +61,28 @@ public class Global extends GlobalSettings {
 		si1.addTema(new Tema("GoF"));
 		si1.addTema(new Tema("Arquitetura"));
 		si1.addTema(new Tema("Play"));
-		si1.addTema(new Tema("JavaScript"));
-		si1.addTema(new Tema("HTML / CSS / Bootstrap"));
+		Dica dicaJavaScript = new DicaMaterial("http://www.w3schools.com/js/"); //DicaMaterial sobre javascript
+		dicaJavaScript.setUser("Mauro Silva Diniz");
+		Tema temaJavaScript = new Tema("JavaScript");
+		dicaJavaScript.setTema(temaJavaScript);
+		temaJavaScript.addDica(dicaJavaScript);
+		si1.addTema(temaJavaScript); //Tema adicionado
+		Dica dicaHtml = new DicaMaterial("https://www.codecademy.com/pt-BR/learn"); //DicaMaterial do codecademy
+		dicaHtml.setUser("Gabriela Sousa");
+		Tema temaHtmlCssBootstrap = new Tema("HTML / CSS / Bootstrap");
+		dicaHtml.setTema(temaHtmlCssBootstrap);
+		temaHtmlCssBootstrap.addDica(dicaHtml);
+		si1.addTema(temaHtmlCssBootstrap);//Tema adicionado
 		si1.addTema(new Tema("Heroku"));
-		si1.addTema(new Tema("Labs"));
+		Dica dicaLabs = new DicaConselho("Aconselho vocês a fazerem todos os Labs."); // DicaConselho sobre os Labs
+		dicaLabs.setUser("Tárcito Luã");
+		Tema temaLabs = new Tema("Labs");
+		dicaLabs.setTema(temaLabs);
+		temaLabs.addDica(dicaLabs);
+		si1.addTema(temaLabs); //Tema adicionado
 		si1.addTema(new Tema("Minitestes"));
 		si1.addTema(new Tema("Projeto"));
+
 		dao.persist(si1);
 
 		Disciplina es1 = new Disciplina("Engenharia de Software 1");
@@ -79,14 +95,24 @@ public class Global extends GlobalSettings {
 		Disciplina tc = new Disciplina("Teoria da Computação");
 		tc.addTema(new Tema("Linguagens Regulares e Autômatos Finitos"));
 		tc.addTema(new Tema("Linguagens Livre-de-Contexto e Autômatos de Pilha"));
-		tc.addTema(new Tema("Máquina de Turing"));
+		Dica dicaMaqTuring = new DicaMaterial("https://pt.wikipedia.org/wiki/M%C3%A1quina_de_Turing"); //DicaMaterial sobre maqina de turing
+		dicaMaqTuring.setUser("Ricardo Schnetzer");
+		Tema temaMaqTuring = new Tema("Máquina de Turing");
+		dicaMaqTuring.setTema(temaMaqTuring);
+		temaMaqTuring.addDica(dicaMaqTuring);
+		tc.addTema(temaMaqTuring); //Tema adicionado
 		tc.addTema(new Tema("Decidibilidade"));
 		tc.addTema(new Tema("Redução"));
 		dao.persist(tc);
 
 		Disciplina eda = new Disciplina("Estrutura de Dados e Algoritmos");
 		eda.addTema(new Tema("Análize de Algoritmos Iterativos"));
-		eda.addTema(new Tema("Análize de Algoritmos Recursivos"));
+		Dica dicaAnalizeDeAlgRecursivos = new DicaConselho("Estude bastante desde o inicio, pois é o assunto que mais reprova."); //Dica conselho sobre
+		dicaAnalizeDeAlgRecursivos.setUser("Tárcito Luã");
+		Tema temaAnaAlgRecursivo = new Tema("Análize de Algoritmos Recursivos");									//analize de algoritmos recursivos
+		dicaAnalizeDeAlgRecursivos.setTema(temaAnaAlgRecursivo);
+		temaAnaAlgRecursivo.addDica(dicaAnalizeDeAlgRecursivos);
+		eda.addTema(temaAnaAlgRecursivo);//Tema adicionado
 		eda.addTema(new Tema("Ordenação Por Comparação - Iterativos"));
 		eda.addTema(new Tema("Ordenação Por Comparação - Recursivos"));
 		eda.addTema(new Tema("Ordenação em Tempo Linear"));
@@ -133,6 +159,7 @@ public class Global extends GlobalSettings {
 
 		User ricardo12 = new User("ricardao009@hotmail.com","rick0241","ricardo12");
 		ricardo12.setNome("Ricardo Schnetzer");
+
 		dao.persist(ricardo12);
 
 		User helena = new User("helenasousa@gmail.com","h145ex","helena");
@@ -161,4 +188,18 @@ public class Global extends GlobalSettings {
 
 		dao.flush();
 	}
+
+	//Todo adicionaVotos
+	/*
+	private void adicionaVotos(){
+		List<Dica> dicas = dao.findAllByClassName("Dica");
+		for(Dica dica : dicas){
+			if(dica.getNome().Equals("")){
+
+			}
+		}
+
+	}
+	*/
+
 }
